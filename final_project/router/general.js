@@ -7,8 +7,8 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   //Write your code here
-    let username=req.query.username
-    let password=req.query.password
+    let username=req.body.username
+    let password=req.body.password
     if (username&&password) {
         if(isValid(username,password)) {
             users.push({username,password})

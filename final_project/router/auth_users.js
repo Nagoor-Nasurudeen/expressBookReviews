@@ -4,7 +4,7 @@ let books = require("./booksdb.js");
 const regd_users = express.Router();
 
 let users = []; 
-
+const SECRET_KEY_JWT="MYSECRET"
 const isValid = (username)=>{ //returns boolean
 //write code to check is the username is valid
     let uniqueUser = users.filter((user)=>{
@@ -25,7 +25,16 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 //only registered users can login
 regd_users.post("/login", (req,res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    let username=req.body.username
+    let password=req.body.password
+    if (username&&password){
+        if(authenticatedUser(username,password)){
+            let access_token=jwt.sign({password},SECRET_KEY_JWT,{expiresIn:60*60})
+            req.session.authorization={access_token,username}
+            return res.send(`${username} successfully logged in`)
+        }else res.status(401).json({message : "check username and password"})
+    }else return res.status(400).json({message:"username and password are required"})
+  
 });
 
 // Add a book review

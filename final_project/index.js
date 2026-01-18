@@ -14,12 +14,15 @@ app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
     if(req.session.authorization){
         let token=req.session.authorization['access_token']
+        if(!token) return res.status(403).json({message:`no token ${req.session.authorization}`})
         jwt.verify(token,SECRET_KEY_JWT,(err,decode)=>{
             if(!err) {
-                res.user=decode
+                req.user=decode
                 next()
             }
-            return res.status(403).json({message:"User not authenticated"})
+            return res.status(403).json({message:"User not authenticated",
+        err})
+            
         })
     }else return res.status(403).json({message:"user not logged in"})
 });

@@ -10,7 +10,7 @@ const isValid = (username)=>{ //returns boolean
     let uniqueUser = users.filter((user)=>{
         return user.username===username
     })
-    return uniqueUser.length>0
+    return !(uniqueUser.length>0)
 }
 
 const authenticatedUser = (username,password)=>{ //returns boolean
@@ -40,7 +40,14 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let isbn =req.params.isbn
+  let review=req.body.review
+  let username=req.session.authorization.username
+  books[isbn].reviews[username]=review
+
+  if(!books[isbn]) return res.status(404).json({message:`There is no book for the given ISBN code = ${isbn}`})
+
+  return res.send(`Review uploaded successfully for the user ${username}`)
 });
 
 module.exports.authenticated = regd_users;

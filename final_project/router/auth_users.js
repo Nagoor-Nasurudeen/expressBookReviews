@@ -43,13 +43,18 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   let isbn =req.params.isbn
   let review=req.body.review
   let username=req.session.authorization.username
-  books[isbn].reviews[username]=review
+  
 
   if(!books[isbn]) return res.status(404).json({message:`There is no book for the given ISBN code = ${isbn}`})
-
+  books[isbn].reviews[username]=review
   return res.send(`Review uploaded successfully for the user ${username}`)
 });
-
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  let isbn =req.params.isbn
+  let username=req.session.authorization.username
+  delete books[isbn].reviews[username]
+  return res.send(`Review deleted for the user ${username}`)
+});
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
